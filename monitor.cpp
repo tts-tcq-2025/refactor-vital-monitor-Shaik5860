@@ -68,8 +68,14 @@ namespace aspect {
         }
 
         for (const auto& v : violations) {
-            cout << v.vitalName << " is " << v.message 
-                 << " (" << v.actualValue << ")\n";
+            // Print enum directly with switch
+            switch (v.vital) {
+                case VitalType::Temperature: cout << "Temperature"; break;
+                case VitalType::PulseRate:   cout << "Pulse Rate"; break;
+                case VitalType::Spo2:        cout << "SpO2"; break;
+            }
+            cout << " is " << v.message << " (" << v.actualValue << ")\n";
+
             // blinking effect
             for (int i = 0; i < 3; ++i) {
                 cout << "\r* " << flush;
