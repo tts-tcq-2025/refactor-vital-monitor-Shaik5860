@@ -8,7 +8,7 @@ using std::flush;
 using std::this_thread::sleep_for;
 using std::chrono::seconds;
 
-// Functional Core
+
 std::vector<VitalViolation> evaluateVitals(
     const std::map<VitalType, float>& patientReadings,
     const std::map<VitalType, VitalRange>& allowedLimits
@@ -28,7 +28,7 @@ std::vector<VitalViolation> evaluateVitals(
     return violations;
 }
 
-// OO: VitalRegistry
+
 void VitalRegistry::addVitalLimit(VitalType vital, float minValue, float maxValue) {
     vitalLimits[vital] = {minValue, maxValue};
 }
@@ -47,7 +47,7 @@ const std::map<std::string, VitalRange>& VitalRegistry::getLimits() const {
     return vitalLimits;
 }
 
-// OO: PatientProfile
+
 PatientProfile::PatientProfile(int age) : ageYears(age) {}
 
 void PatientProfile::personalizeLimits(VitalRegistry& registry) const {
