@@ -10,37 +10,37 @@ using std::chrono::seconds;
 
 // Functional Core
 std::vector<VitalViolation> evaluateVitals(
-    const std::map<std::string, float>& patientReadings,
-    const std::map<std::string, VitalRange>& allowedLimits
+    const std::map<VitalType, float>& patientReadings,
+    const std::map<VitalType, VitalRange>& allowedLimits
 ) {
     std::vector<VitalViolation> violations;
-    for (const auto& [vitalName, actualValue] : patientReadings) {
-        auto it = allowedLimits.find(vitalName);
-        if (it == allowedLimits.end()) continue; // skip unknown vitals
+    for (const auto& [vital, actualValue] : patientReadings) {
+        auto iterator = allowedLimits.find(vital);
+        if (iterator == allowedLimits.end()) continue; // skip unknown vitals
 
-        const auto& range = it->second;
+        const auto& range = iterator->second;
         if (actualValue < range.minValue) {
-            violations.push_back({vitalName, actualValue, range, "below-min"});
+            violations.push_back({vital, actualValue, range, "below-min"});
         } else if (actualValue > range.maxValue) {
-            violations.push_back({vitalName, actualValue, range, "above-max"});
+            violations.push_back({vital, actualValue, range, "above-max"});
         }
     }
     return violations;
 }
 
 // OO: VitalRegistry
-void VitalRegistry::addVitalLimit(const std::string& vitalName, float minValue, float maxValue) {
-    vitalLimits[vitalName] = {minValue, maxValue};
+void VitalRegistry::addVitalLimit(VitalType vital, float minValue, float maxValue) {
+    vitalLimits[vital] = {minValue, maxValue};
 }
 
-void VitalRegistry::adjustMin(const std::string& vitalName, float newMin) {
-    auto it = vitalLimits.find(vitalName);
-    if (it != vitalLimits.end()) it->second.minValue = newMin;
+void VitalRegistry::adjustMin(VitalType vital, float newMin) {
+    auto iterator = vitalLimits.find(vital);
+    if (iterator != vitalLimits.end()) it->second.minValue = newMin;
 }
 
-void VitalRegistry::adjustMax(const std::string& vitalName, float newMax) {
-    auto it = vitalLimits.find(vitalName);
-    if (it != vitalLimits.end()) it->second.maxValue = newMax;
+void VitalRegistry::adjustMax(VitalType vital, float newMax) {
+    auto iterator = vitalLimits.find(vital);
+    if (iterator != vitalLimits.end()) it->second.maxValue = newMax;
 }
 
 const std::map<std::string, VitalRange>& VitalRegistry::getLimits() const {
@@ -52,10 +52,10 @@ PatientProfile::PatientProfile(int age) : ageYears(age) {}
 
 void PatientProfile::personalizeLimits(VitalRegistry& registry) const {
     if (ageYears <= 12) { // pediatric
-        registry.adjustMax("temperature", 100);
-        registry.adjustMin("pulseRate", 70);
+        registry.adjustMax(VitalType::Temperature, 100);
+        registry.adjustMin(VitalType::PulseRate, 70);
     } else if (ageYears >= 65) { // senior
-        registry.adjustMax("pulseRate", 90);
+        registry.adjustMax(VitalType::PulseRate, 90);
     }
 }
 
