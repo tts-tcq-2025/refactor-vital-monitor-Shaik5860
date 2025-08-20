@@ -3,34 +3,38 @@
 #include <map>
 #include <vector>
 
+enum class VitalType {
+    Temperature,
+    PulseRate,
+    Spo2
+};
+
 struct VitalRange {
     float minValue;
     float maxValue;
 };
 
 struct VitalViolation {
-    std::string vitalName;
+    VitalType vital;
     float actualValue;
     VitalRange range;
     std::string message;
 };
 
-// Functional Core
 std::vector<VitalViolation> evaluateVitals(
-    const std::map<std::string, float>& patientReadings,
-    const std::map<std::string, VitalRange>& allowedLimits
+    const std::map<VitalType, float>& patientReadings,
+    const std::map<VitalType, VitalRange>& allowedLimits
 );
 
-// Object-Oriented Classes
 class VitalRegistry {
 public:
-    void addVitalLimit(const std::string& vitalName, float minValue, float maxValue);
-    void adjustMin(const std::string& vitalName, float newMin);
-    void adjustMax(const std::string& vitalName, float newMax);
-    const std::map<std::string, VitalRange>& getLimits() const;
+    void addVitalLimit(VitalType vital, float minValue, float maxValue);
+    void adjustMin(VitalType vital, float newMin);
+    void adjustMax(VitalType vital, float newMax);
+    const std::map<VitalType, VitalRange>& getLimits() const;
 
 private:
-    std::map<std::string, VitalRange> vitalLimits;
+    std::map<VitalType, VitalRange> vitalLimits;
 };
 
 class PatientProfile {
@@ -46,3 +50,4 @@ private:
 namespace aspect {
     void notify(const std::vector<VitalViolation>& violations);
 }
+
